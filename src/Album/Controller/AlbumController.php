@@ -33,7 +33,7 @@ class AlbumController extends AbstractActionController
     {
         
     	$layout = $this->layout();
-    	$layout->setTemplate('layout/layout2');
+    	$layout->setTemplate('layout/layout');
     	
     	$form = new AlbumForm();
         $form->get('submit')->setValue('Add');
