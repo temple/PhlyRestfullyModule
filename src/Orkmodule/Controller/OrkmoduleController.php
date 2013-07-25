@@ -1,13 +1,13 @@
 <?php
-namespace Album\Controller;
+namespace Orkmodule\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 //use Zend\Mvc\Controller\AbstractRestfulController // Use for webservice
 use Zend\View\Model\ViewModel;
-use Album\Model\Album;          // <-- Add this import
-use Album\Form\AlbumForm;       // <-- Add this import
+use Orkmodule\Model\Orkmodule;          // <-- Add this import
+use Orkmodule\Form\OrkmoduleForm;       // <-- Add this import
 
-class AlbumController extends AbstractActionController
+class OrkmoduleController extends AbstractActionController
 {
     
 	protected $albumTable;
@@ -16,7 +16,7 @@ class AlbumController extends AbstractActionController
 	{
 		if (!$this->albumTable) {
 			$sm = $this->getServiceLocator();
-			$this->albumTable = $sm->get('Album\Model\AlbumTable');
+			$this->albumTable = $sm->get('Orkmodule\Model\AlbumTable');
 		}
 		return $this->albumTable;
 	}
@@ -35,7 +35,7 @@ class AlbumController extends AbstractActionController
     	$layout = $this->layout();
     	$layout->setTemplate('layout/layout');
     	
-    	$form = new AlbumForm();
+    	$form = new Okrmodule();
         $form->get('submit')->setValue('Add');
 		
         $request = $this->getRequest();
@@ -66,7 +66,7 @@ class AlbumController extends AbstractActionController
         }
         $album = $this->getAlbumTable()->getAlbum($id);
 
-        $form  = new AlbumForm();
+        $form  = new Okrmodule();
         $form->bind($album);
         $form->get('submit')->setAttribute('value', 'Edit');
 

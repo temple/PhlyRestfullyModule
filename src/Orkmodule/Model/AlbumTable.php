@@ -1,5 +1,5 @@
 <?php
-namespace Album\Model;
+namespace Orkmodule\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 

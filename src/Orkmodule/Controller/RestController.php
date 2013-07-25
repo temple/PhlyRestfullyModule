@@ -1,12 +1,12 @@
 <?php
-namespace Album\Controller;
+namespace Orkmodule\Controller;
 
 
 use Zend\Mvc\Controller\AbstractActionController;
 //use Zend\Mvc\Controller\AbstractRestfulController // Use for webservice
 use Zend\View\Model\ViewModel;
-use Album\Model\Album;          // <-- Add this import
-use Album\Form\AlbumForm;       // <-- Add this import
+use Orkmodule\Model\Orkmodule;          // <-- Add this import
+use Orkmodule\Form\OrkmoduleForm;       // <-- Add this import
 
 class RestController extends AbstractActionController{
 	/**

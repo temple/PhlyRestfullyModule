@@ -3,7 +3,7 @@ namespace Album\Form;
 
 use Zend\Form\Form;
 
-class AlbumForm extends Form
+class OrkmoduleForm extends Form
 {
     public function __construct($name = null)
     {

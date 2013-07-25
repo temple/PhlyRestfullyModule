@@ -1,5 +1,5 @@
 <?php
-namespace Album\Model;
+namespace Orkmodule\Model;
 
 use Zend\InputFilter\Factory as InputFactory;     // <-- Add this import
 use Zend\InputFilter\InputFilter;                 // <-- Add this import
