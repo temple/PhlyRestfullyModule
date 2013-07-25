@@ -3,6 +3,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Album\Controller\Album' => 'Album\Controller\AlbumController',
+            'Album\Controller\Rest' => 'Album\Controller\RestController',
         ),
     ),
 	// The following section is new and should be added to your file
@@ -22,6 +23,29 @@ return array(
 									),
 							),
 					),
+                    'album/rest' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => '/album/rest',
+                            'defaults' => array(
+                                'controller' => 'Album\Controller\Rest',
+                                'action' => 'index'
+                            )
+                            
+                        ),
+                        'may_terminate' => 'true',
+                        'child_routes' => array(
+                            'default' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '[/:id]',
+                                    'constraints' => array(
+                                        'action' => '[0-9]+'
+                                    )
+                                )
+                            )
+                        )
+                    )
 			),
 	),	
     'view_manager' => array(
