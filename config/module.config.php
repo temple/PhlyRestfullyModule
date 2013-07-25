@@ -26,7 +26,7 @@ return array(
                     'orkmodule/rest' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => '/Orkmodule/rest',
+                            'route' => '/orkmodule/rest',
                             'defaults' => array(
                                 'controller' => 'orkmodule\Controller\Rest',
                                 'action' => 'index'
