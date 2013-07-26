@@ -6,48 +6,8 @@ return array(
             'Orkmodule\Controller\Rest' => 'Orkmodule\Controller\RestController',
         ),
     ),
-	// The following section is new and should be added to your file
-	'router' => array(
-			'routes' => array(
-					'orkmodule' => array(
-							'type'    => 'segment',
-							'options' => array(
-									'route'    => '/orkmodule[/:action][/:id]',
-									'constraints' => array(
-											'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-											'id'     => '[0-9]+',
-									),
-									'defaults' => array(
-											'controller' => 'orkmodule\Controller\Orkmodule',
-											'action'     => 'index',
-									),
-							),
-					),
-                    'orkmodule/rest' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => '/orkmodule/rest',
-                            'defaults' => array(
-                                'controller' => 'orkmodule\Controller\Rest',
-                                'action' => 'index'
-                            )
-                            
-                        ),
-                        'may_terminate' => 'true',
-                        'child_routes' => array(
-                            'default' => array(
-                                'type' => 'segment',
-                                'options' => array(
-                                    'route' => '[/:id]',
-                                    'constraints' => array(
-                                        'action' => '[0-9]+'
-                                    )
-                                )
-                            )
-                        )
-                    )
-			),
-	),	
+    'router' => include('module.routes.config.php'),
+	// The following section is new and should be added to your file	
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
@@ -62,6 +22,9 @@ return array(
         ),
         'template_path_stack' => array(
             'orkmodule' => __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+            'ViewJsonStrategy',
         ),
     ),    
     'translator' => array(
