@@ -1,15 +1,20 @@
 <?php
 
+function restController($module=null){
+    $module = ($module?$module:'orkmodule');
+    return "$module\Controller\Rest";
+}
+
 function restAction($request,$module,$action=null){
     $request=strtolower($request);
     $action = ($action ? $action : $request);
     return array(
         'type' => 'method',
         'options' => array(
-                'route' => '/rest[/:id]',
+               // 'route' => '/rest[/:id]',
                 'verb' => "$request",
                 'defaults' => array(
-                    'controller' => "$module\Controller\Rest",
+                   // 'controller' => "$module\Controller\Rest",
                     'action' => "$action"
                 ),
         ),
@@ -30,12 +35,28 @@ return 	array(
 											'controller' => 'orkmodule\Controller\Orkmodule',
 											'action'     => 'index',
 									),
-							),
+							),                          
 					),
-					'rest/get'=> restAction('get','orkmodule'),
-					'rest/post'=> restAction('post','orkmodule'),
-                    'rest/delete'=> restAction('delete','orkmodule'),
-                    'rest/put'=> restAction('put','orkmodule','update'),
+                    'rest' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => '/rest/:entity[/:id]',
+                             'constraints' => array(
+                                            'entity' => '[a-zA-Z][a-zA-Z-]*',
+                                            'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => restController('orkmodule'),
+                                'action' => 'index'
+                            )
+                        ),                        
+                        "child_routes" => array(
+                            'rest/get'=> restAction('get','orkmodule'),
+                            'rest/post'=> restAction('post','orkmodule'),
+                            'rest/delete'=> restAction('delete','orkmodule'),
+                            'rest/put'=> restAction('put','orkmodule','update'),                           
+                        )
+                    ),
                     
 					/*
                     'orkmodule/rest' => array(
