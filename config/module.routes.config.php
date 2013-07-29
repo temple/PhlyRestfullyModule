@@ -5,105 +5,187 @@ function restController($module=null){
     return "$module\Controller\Rest";
 }
 
-function restAction($request,$module,$action=null){
+function restAction($request,$module,$segment = null, $constraints = null, $action=null){
     $request=strtolower($request);
     $action = ($action ? $action : $request);
+
+    if (!is_null($segment)):
+        return array(
+            'type' => 'segment',
+            'options' => array(
+                'route' => "$segment",
+                'constraints' => (array) $constraints,                
+            ),
+            'may_terminate' => false,
+            'child_routes' => array(
+                "rest/method/$request" => array(
+                    'type' => 'method',
+                    'options' => array(
+                        'verb' => "$request",
+                        'defaults' => array(
+                            'action' => "$action"
+                        )
+                    ),
+                    "may_terminate" => true,
+                )
+            )
+        );
+    else:
+        return array(
+                    'type' => 'method',
+                    'options' => array(
+                        'verb' => "$request",
+                        'defaults' => array(
+                            'action' => "$action"
+                        )
+                    ),
+                    "may_terminate" => true,
+
+                );
+    endif;
+}
+
+
+
+
+function routeAction($action,$module,$segment=NULL){
     return array(
-        'type' => 'method',
-        'options' => array(
-               // 'route' => '/rest[/:id]',
-                'verb' => "$request",
+        'type' => 'segment',
+        'options' => array(                
+                'verb' => "$action",
                 'defaults' => array(
                    // 'controller' => "$module\Controller\Rest",
                     'action' => "$action"
                 ),
-        ),
+        ) + (is_null($segment) ? array() : array('route' => "$segment"))        
     );
 }
 
-return 	array(
+$routes= array(
 			'routes' => array(
-					'orkmodule' => array(
-							'type'    => 'segment',
-							'options' => array(
-									'route'    => '/orkmodule[/:action][/:id]',
-									'constraints' => array(
-											'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-											'id'     => '[0-9]+',
-									),
-									'defaults' => array(
-											'controller' => 'orkmodule\Controller\Orkmodule',
-											'action'     => 'index',
-									),
-							),                          
-					),
-                    'rest' => array(
-                        'type' => 'segment',
+                    'rest.skeleton' => array(
+                        'type' => 'Hostname',
                         'options' => array(
-                            'route' => '/rest/:entity[/:id]',
-                             'constraints' => array(
-                                            'entity' => '[a-zA-Z][a-zA-Z-]*',
-                                            'id'     => '[0-9]+',
+                            'route' => ':subdomain.skeleton',
+                            'constraints' => array(
+                                'subdomain' => 'rest'
                             ),
                             'defaults' => array(
                                 'controller' => restController('orkmodule'),
-                                'action' => 'index'
+                                'action' => 'index',
                             )
-                        ),                        
-                        "child_routes" => array(
-                            'rest/get'=> restAction('get','orkmodule'),
-                            'rest/post'=> restAction('post','orkmodule'),
-                            'rest/delete'=> restAction('delete','orkmodule'),
-                            'rest/put'=> restAction('put','orkmodule','update'),                           
-                        )
-                    ),
-                    
-					/*
-                    'orkmodule/rest' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => '/orkmodule/rest',
-                            'defaults' => array(
-                                'controller' => 'orkmodule\Controller\Rest',
-                                'action' => 'index'
-                            )
-                            
                         ),
-                        'may_terminate' => 'true',
-                        'child_routes' => array(
-                            'default' => array(
+                        //'may_terminate' => 'true',
+/*                        'child_routes' => array(
+                            'rest.skeleton/entity/id' => array(
                                 'type' => 'segment',
                                 'options' => array(
-                                    'route' => '[/:id]',
+                                    'route' => '/:entity[/:id]',
                                     'constraints' => array(
-                                        'action' => '[0-9]+'
+                                        'entity' => '[a-zA-Z][a-zA-Z-]*',
+                                        'id'     => '[0-9]+',
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => restController('orkmodule'),
+                                        'action' => 'index'
                                     )
+                                ),
+                                "child_routes" => array(
+                                    'rest/get'=> restAction('get','orkmodule'),
+                                    'rest/post'=> restAction('post','orkmodule'),
+                                    'rest/delete'=> restAction('delete','orkmodule'),
+                                    'rest/put'=> restAction('put','orkmodule','update'),                           
                                 )
                             )
-                        )
+                        ) */
                     ),
-                    'orkmodule/tser' => array(
-                        'type' => 'segment',
+                    'skeleton' => array(
+                        'type' => 'Hostname',
                         'options' => array(
-                            'route' => '/orkmodule/tser',
+                            'route' => 'skeleton',  //cambiar por el dominio
                             'defaults' => array(
-                                'controller' => 'orkmodule\Controller\Rest',
-                                'action' => 'index'
+                                'controller' => 'application\Controller\Index',
+                                'action' => 'index',
                             )
-                            
-                        ),
-                        'may_terminate' => 'true',
+                        ), 
+
+
                         'child_routes' => array(
-                            'default' => array(
-                                'type' => 'segment',
+                            'rest' => array(
+                                'type' => 'literal',
                                 'options' => array(
-                                    'route' => '[/:id]',
-                                    'constraints' => array(
-                                        'action' => '[0-9]+'
+                                    'route' =>'/rest',
+                                    'defaults' => array(
+                                        'controller' => 'orkmodule\Controller\Rest',
+                                        'action' => 'index',
+                                        'entity' => 'all'
                                     )
-                                )
+                                ),
+                                'may_terminate' => true,
+                                'child_routes' => array(                                                                        
+                                    'rest/entity' => array(
+                                        'type' => 'segment',
+                                        'options' => array(
+                                            'route' => '/:entity',
+                                            'constraints' => array(
+                                                'entity' => '[a-zA-Z][a-zA-Z0-9_]*',
+                                            ),
+                                            'defaults' => array(
+                                                'action' => 'index',
+                                            )
+                                        ),
+                                        "may_terminate" => true,
+                                        'child_routes' => array(                                            
+                                            'rest/get' => restAction('get','orkmodule','/:id',array('id'=>'[0-9]+')),
+                                            'rest/delete' => restAction('delete','orkmodule','/:id',array('id'=>'[0-9]+')),
+                                            'rest/put' => restAction('put','orkmodule','/:id',array('id'=>'[0-9]+')),
+                                            'rest/post' => restAction('post','orkmodule'),
+                                        )
+                                    ),
+                                    'rest/action' => array(
+                                        'type' => 'segment',
+                                        'options' => array(
+                                            'route' => '/:action',
+                                            'constraints' => array(
+                                                'action' => '(get|read|post|create|put|update|delete)',
+                                            ),                                            
+                                            'defaults' => array(
+                                                'entity' => 'all'
+                                            )
+                                        ),
+                                        'may_terminate' => true,
+                                        'child_routes' => array(
+                                            'rest/action/entity' => array(
+                                                'type' => 'segment',
+                                                'options' => array(
+                                                    'route' => '/:entity',
+                                                    'constraints' => array(
+                                                        'entity' => '[a-zA-Z][a-zA-Z0-9_]*',
+                                                    ),                                                
+                                                ),
+                                                "may_terminate" => true,
+                                                'child_routes' => array(
+                                                    'rest/action/entity/id' => array(
+                                                        'type' => 'segment',
+                                                        'options' => array(
+                                                            'route' => '/:id',
+                                                            'constraints' => array(
+                                                                'id' => '[0-9]+',
+                                                                'action' => '(get|read|put|update|delete)'
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    ),                                   
+                                )                                
                             )
-                        )
-                    )*/
-			),
-		);
+                        ),
+                    ),
+            )
+        );
+
+
+//print"<pre>".print_r($routes,true)."</pre>";
+return $routes;
