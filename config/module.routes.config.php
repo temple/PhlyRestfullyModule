@@ -62,43 +62,7 @@ function routeAction($action,$module,$segment=NULL){
 }
 
 $routes= array(
-			'routes' => array(
-                    'rest.skeleton' => array(
-                        'type' => 'Hostname',
-                        'options' => array(
-                            'route' => ':subdomain.skeleton',
-                            'constraints' => array(
-                                'subdomain' => 'rest'
-                            ),
-                            'defaults' => array(
-                                'controller' => restController('orkmodule'),
-                                'action' => 'index',
-                            )
-                        ),
-                        //'may_terminate' => 'true',
-/*                        'child_routes' => array(
-                            'rest.skeleton/entity/id' => array(
-                                'type' => 'segment',
-                                'options' => array(
-                                    'route' => '/:entity[/:id]',
-                                    'constraints' => array(
-                                        'entity' => '[a-zA-Z][a-zA-Z-]*',
-                                        'id'     => '[0-9]+',
-                                    ),
-                                    'defaults' => array(
-                                        'controller' => restController('orkmodule'),
-                                        'action' => 'index'
-                                    )
-                                ),
-                                "child_routes" => array(
-                                    'rest/get'=> restAction('get','orkmodule'),
-                                    'rest/post'=> restAction('post','orkmodule'),
-                                    'rest/delete'=> restAction('delete','orkmodule'),
-                                    'rest/put'=> restAction('put','orkmodule','update'),                           
-                                )
-                            )
-                        ) */
-                    ),
+			'routes' => array(                    
                     'skeleton' => array(
                         'type' => 'Hostname',
                         'options' => array(
@@ -122,7 +86,7 @@ $routes= array(
                                     )
                                 ),
                                 'may_terminate' => true,
-                                'child_routes' => array(                                                                        
+                                'child_routes' => ($child_routes = array(                                                                        
                                     'rest/entity' => array(
                                         'type' => 'segment',
                                         'options' => array(
@@ -179,10 +143,27 @@ $routes= array(
                                             )
                                         )
                                     ),                                   
-                                )                                
+                                ))                                
                             )
                         ),
                     ),
+                    'rest.skeleton' => array(
+                        'type' => 'Hostname',
+                        'options' => array(
+                            'route' => ':subdomain.skeleton',
+                            'constraints' => array(
+                                'subdomain' => 'rest'
+                            ),
+                            'defaults' => array(
+                                'controller' => restController('orkmodule'),
+                                'action' => 'index',
+                            )
+                        ),
+                        'may_terminate' => 'true',
+                        'child_routes' => $child_routes                           
+                    ),
+
+
             )
         );
 
