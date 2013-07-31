@@ -2,16 +2,9 @@
 namespace Paste\Model;
 
 use Zend\Db\TableGateway\TableGateway;
+use Paste\Model\PersistenceInterface;
 
-interface PersistenceInterface
-{
-    public function save(array $data);
-    public function fetch($id);
-    public function fetchAll();
-}
-
-
-class AlbumTable implements PersistenceInterface;
+class AlbumTable implements PersistenceInterface
 {
     protected $tableGateway;
 
@@ -38,8 +31,9 @@ class AlbumTable implements PersistenceInterface;
     }
 
     public function save(array $data){
+
          $album = new Album();
-         $album->exchangeArray($data);
+         $album->exchangeArray($data);                 
          return $this->saveAlbum($album);
     }
 
@@ -55,8 +49,15 @@ class AlbumTable implements PersistenceInterface;
         );
 
         $id = (int)$album->id;
-        if ($id == 0) {
-            $this->tableGateway->insert($data);
+        if ($id == 0) {            
+            $result = $this->tableGateway->insert($data);            
+            if ($result){
+                $id = $this->tableGateway->getLastInsertValue();
+                $album->id = $id;
+            }
+            else
+                throw new \Exception('Error when inserting');
+
         } else {
             if ($this->getAlbum($id)) {
                 $this->tableGateway->update($data, array('id' => $id));
@@ -64,6 +65,7 @@ class AlbumTable implements PersistenceInterface;
                 throw new \Exception('Form id does not exist');
             }
         }
+        return $album;
     }
 
     public function deleteAlbum($id)
