@@ -1,9 +1,17 @@
 <?php
-namespace Album\Model;
+namespace Paste\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 
-class AlbumTable
+interface PersistenceInterface
+{
+    public function save(array $data);
+    public function fetch($id);
+    public function fetchAll();
+}
+
+
+class AlbumTable implements PersistenceInterface;
 {
     protected $tableGateway;
 
@@ -27,6 +35,16 @@ class AlbumTable
             throw new \Exception("Could not find row $id");
         }
         return $row;
+    }
+
+    public function save(array $data){
+         $album = new Album();
+         $album->exchangeArray($data);
+         return $this->saveAlbum($album);
+    }
+
+    public function fetch($id){
+        return $this->getAlbum($id);
     }
 
     public function saveAlbum(Album $album)

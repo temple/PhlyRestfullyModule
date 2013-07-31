@@ -1,11 +1,11 @@
 <?php
-namespace Album\Controller;
+namespace Paste\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 //use Zend\Mvc\Controller\AbstractRestfulController // Use for webservice
 use Zend\View\Model\ViewModel;
-use Album\Model\Album;          // <-- Add this import
-use Album\Form\AlbumForm;       // <-- Add this import
+use Paste\Model\Album;          // <-- Add this import
+use Paste\Form\AlbumForm;       // <-- Add this import
 
 class AlbumController extends AbstractActionController
 {
